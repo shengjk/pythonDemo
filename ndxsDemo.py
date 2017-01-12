@@ -9,7 +9,6 @@ import sys
 if __name__ == '__main__':
 
 
-
     f=open("F:\\riotest.txt","w")
     sys.stdout=f
     for i in range(1,101):
