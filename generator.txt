@@ -90,3 +90,17 @@ g: 5
 g: 8
 Generator return value: done
 关于如何捕获错误，后面的错误处理还会详细讲解
+
+
+generator是非常强大的工具，在Python中，可以简单地把列表生成式改成generator，也可以通过函数实现复杂逻辑的generator。
+要理解generator的工作原理，它是在for循环的过程中不断计算出下一个元素，并在适当的条件结束for循环。对于函数改成的generator来说，遇到return语句或者执行到函数体最后一行语句，就是结束generator的指令，for循环随之结束。
+Python3 基础教程【完整版】 http://www.yeayee.com/
+119/531
+请注意区分普通函数和generator函数，普通函数调用直接返回结果：
+>>> r = abs(6)
+>>> r
+6
+generator函数的“调用”实际返回一个generator对象：
+>>> g = fib(6)
+>>> g
+<generator object fib at 0x1022ef948>
