@@ -9,6 +9,7 @@ import urllib2
 '''
 http://aljun.me/post/17
 https://foofish.net/http-requests.html
+https://www.crummy.com/software/BeautifulSoup/bs4/doc.zh/#id32
 '''
 if __name__ == '__main__':
 	header = {
