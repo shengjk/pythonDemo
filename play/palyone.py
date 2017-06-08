@@ -4,8 +4,7 @@
 # Create by shengjk1 on  2017/6/6 0006
 
 import urllib
-
-from bs4 import BeautifulSoup
+import urllib2
 
 '''
 http://aljun.me/post/17
@@ -26,9 +25,9 @@ if __name__ == '__main__':
 '''
 下载图片
 '''
-import urllib
+import urllib2
 
-response=urllib.urlopen("http://zhaduixueshe.com/static/pic/discovery.png")
+response=urllib2.urlopen("http://zhaduixueshe.com/static/pic/discovery.png")
 
 with open("xxx.png","wb") as f:
 	f.write(response.read())
@@ -44,8 +43,9 @@ urllib.urlretrieve(url,path)
 #request库
 import requests
 r=requests.get('https://api.github.com/events')
+print r.json()
 r=requests.get("https://foofish.net")
-print (r.headers)
+print r.headers
 #响应头
 for name,value in r.headers.items():
 	print ("%s:%s" % (name,value))
@@ -59,7 +59,7 @@ for name,value in r.headers.items():
 #查询参数
 args={"p":4,'s':20}
 r=requests.get("http://fav.foofish.net", params = args)
-print (r.url) #http://fav.foofish.net/?p=4&s=20
+print r.url #http://fav.foofish.net/?p=4&s=20
 
 #请求头
 '''
@@ -74,12 +74,13 @@ requests 可以非常灵活地构建 POST 请求需要的数据，如果服务�
 '''
 payload = {'key1': 'value1', 'key2': 'value2'}
 r = requests.post("http://httpbin.org/post", data=payload)
-print (r.content)
+print r.content
+
 import json
 url = 'http://httpbin.org/post'
 payload = {'some': 'data'}
 r = requests.post(url, json=payload)
-print (r.content)
+print r.content
 
 #响应的内容
 '''
@@ -97,14 +98,14 @@ text 是 str 类型，比如一个普通的 HTML 页面，需要对文本进一�
 '''
 import re
 r=requests.get("https://foofish.net/understand-http.html")
-print  (type(r.content))
-print (re.compile("xxx").findall(r.text))
+print  type(r.content)
+print re.compile("xxx").findall(r.text)
 
 '''
 如果使用第三方开放平台或者API接口爬取数据时，返回的内容是json格式的数据时，那么可以直接使用json()方法返回一个经过json.loads()处理后的对象。
 '''
 r=requests.get('https://www.v2ex.com/api/topics/hot.json')
-print  (r.json())
+print  r.json()
 
 '''
 代理设置
@@ -150,9 +151,3 @@ r = session.get(home_url)
 session.close()
 构建一个session会话之后，客户端第一次发起请求登录账户，服务器自动把cookie信息保存在session对象中，发起第二次请求时requests 自动把session中的cookie信息发送给服务器，使之保持通信状态。
 '''
-print '===================================='
-r=requests.get("http://jandan.net/duan")
-soup=BeautifulSoup(r.content,'html.parser')
-print r.text
-for a in soup.find_all(class_=''):
-	print a
