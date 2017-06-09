@@ -27,7 +27,7 @@ text = """
     </head>
     <body>
         <h1>BeautifulSoup</h1>
-        <p class="bold">如何使用BeautifulSoup</p>
+        <p class="bold">如何使用BeautifulSouphajhfjd</p>
         <p class="big" id="key1"> 第二个p标签</p>
         <a href="http://foofish.net">python</a>
     </body>
@@ -152,8 +152,8 @@ BeatifulSoup 是一个用于操作 HTML 文档的 Python 库，初始化 Beatifu
 '''
 
 
-print soup.body.p
-print '=============================='
-print soup.find('title')
-print soup.find_all('p','big')
-print soup.find_all(href=re.compile('^http'))
+# print soup.body.p
+# print '=============================='
+# print soup.find('title')
+# print soup.find_all('p','big')
+# print soup.find_all(href=re.compile('^http'))
