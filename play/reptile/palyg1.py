@@ -18,6 +18,8 @@ for line in raw_cookies.split(';'):
 	key,value = line.split("=", 1)
 	cookie[key] = value #一些格式化操作，用来装载cookies
 
+
+
 #重点来了！用requests，装载cookies，请求网站
 page = requests.get('#妹纸的豆瓣主页#',cookies=cookie)
 

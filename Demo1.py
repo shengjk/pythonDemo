@@ -1,10 +1,33 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-  
-#coding=utf-8
-#Created by shengjk1 on 2017/3/5
+#Create by shengjk1 on  2017/11/5
+import sys
 
-from PIL import Image
-if __name__ == '__main__':
+import time
+import os
+import logging
 
-    print ("1111111111111"
-           "11")
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+class Student():
+	Tab="aaaaa"
+	def __init__(self,name,score):
+		self._name=name
+		self._score=score
+		self.list=['a','v','c']
+
+
+	def get_list(self):
+		return self.list
+
+	def print_score(self):
+		print('%s : %s ' % (self._name,self._score))
+
+
+
+b=Student('aaaa',334)
+b.get_list()
+print b.Tab
+print Student.Tab
+

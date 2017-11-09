@@ -40,5 +40,5 @@ def mains(numbers):
         image(sta=sta,end=end,depths=number)
 
 if __name__ == '__main__':
-    mains(500)
+    mains(40)
 
