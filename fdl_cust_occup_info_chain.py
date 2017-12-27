@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-  
-# coding=utf-8
-# ===============================================================================
+#coding=utf-8
+#===============================================================================
 #
 #         FILE: fdl_cust_occup_info_chain.py
 #
@@ -21,87 +21,85 @@
 #     REVIEWER: 
 #     REVISION: ---
 #    TGT_TABLE: 
-# ===============================================================================
+#===============================================================================
 
 import sys
 import ConfigParser
+from calendar import Calendar
+
 import MySQLdb
 import os
 import string
 import datetime
 import time
-
 sys.path.append(os.getenv('BDP_CONN'))
 from BdpConnector import *
 from Calendar import *
 from HiveTasks import *
 import traceback
-
 reload(sys)
-sys.setdefaultencoding("utf-8")
+sys.setdefaultencoding( "utf-8" )
 
-config = ConfigParser.ConfigParser()
+config=ConfigParser.ConfigParser()
 config.read("/home/hadoop/edw/etl/conf/etl.ini")
 
 tag_db = 'fdl'
 tag_tab = 'fdl_cust_occup_info_chain'
-src_db = 'bdl'
+src_db= 'bdl'
 src_tab = 'bdl_app_cust_occupation_info'
 
-hts = HiveTasks(tag_db, tag_tab)
-dte = Calendar(datetime.datetime.today())
+hts = HiveTasks(tag_db,tag_tab)
+dte=Calendar(datetime.datetime.today())
 
-# 字符型起始日期
+#字符型起始日期
 v_statbgdate = sys.argv[1]
-# 字符型结束日期
+#字符型结束日期
 v_stateddate = sys.argv[2]
-# 日期型起始日期
-v_start_date = datetime.datetime.strptime(v_statbgdate, '%Y%m%d').date()
-# 日期型结束日期
-v_end_date = datetime.datetime.strptime(v_stateddate, '%Y%m%d').date()
-# 当前时间
+#日期型起始日期
+v_start_date = datetime.datetime.strptime(v_statbgdate,'%Y%m%d').date()
+#日期型结束日期
+v_end_date   = datetime.datetime.strptime(v_stateddate,'%Y%m%d').date()
+#当前时间
 v_run_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-# 当前日期
+#当前日期
 v_run_date = datetime.datetime.now().strftime("%Y%m%d")
-# etl抽数日期
-v_etl_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-# T+1统计日期
+#etl抽数日期
+v_etl_date  = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#T+1统计日期
 v_yest_date = dte.getDayBefore('')
-# 对时间参数进行处理
-if v_statbgdate.strip() == '' and v_stateddate.strip() == '':
-    v_statbgdate = v_yest_date
-    v_stateddate = v_yest_date
-elif v_statbgdate.strip() != '' and v_stateddate.strip() == '':
-    v_stateddate = v_statbgdate
-elif v_statbgdate.strip() == '' and v_stateddate.strip() != '':
-    v_statbgdate = v_stateddate
-
-# 定义lzo数据索引路径
-lzo_index_path = None
-# 定义该表数据是否要压缩
+#对时间参数进行处理
+if v_statbgdate.strip()=='' and v_stateddate.strip()=='':
+    v_statbgdate=v_yest_date
+    v_stateddate=v_yest_date
+elif v_statbgdate.strip()!='' and v_stateddate.strip()=='':
+    v_stateddate=v_statbgdate
+elif v_statbgdate.strip()=='' and v_stateddate.strip()!='':
+    v_statbgdate=v_stateddate
+    
+#定义lzo数据索引路径    
+lzo_index_path=None
+#定义该表数据是否要压缩
 lzo_compress = False
-# 定义是否有分区
+#定义是否有分区
 is_partition = True
-# 定义数据文件是否要做合并
+#定义数据文件是否要做合并
 merge_flag = False
-# 合并文件路径
+#合并文件路径
 merge_part_dir = None
-# 定义是否需要做表解析
+#定义是否需要做表解析
 parse_flag = False
 
 #################Need user configure the parameters####################
-v_begin_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-conn = MySQLdb.connect(host=config.get("MYSQL_DB", "IP"), port=int(config.get("MYSQL_DB", "PORT")),
-                       user=config.get("MYSQL_DB", "USERNAME"), passwd=config.get("MYSQL_DB", "PASSWORD"),
-                       db=config.get("MYSQL_DB", "DB"))
-cur = conn.cursor()
+v_begin_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+conn=MySQLdb.connect(host=config.get("MYSQL_DB","IP"),port=int(config.get("MYSQL_DB","PORT")),user=config.get("MYSQL_DB","USERNAME"),passwd=config.get("MYSQL_DB","PASSWORD"),db=config.get("MYSQL_DB","DB"))
+cur=conn.cursor()
 
-cnt1 = 0
+cnt1=0
 
-dir_name = '/user/hive/warehouse/fdl.db/' + tag_tab + '/chain_status=active/end_date=47121231/'
-cnt1 = hts.count_bytes(dir_name)
-if cnt1 == 0:
-    os._exit(1)
+dir_name='/user/hive/warehouse/fdl.db/'+tag_tab+'/chain_status=active/end_date=47121231/'
+cnt1=hts.count_bytes(dir_name)
+if cnt1==0:
+   os._exit(1)
 
 v_sql = """
       set hive.exec.max.dynamic.partitions=100000;
@@ -185,8 +183,8 @@ from (select
             time_inst,
             time_upd
         from bdl.bdl_app_cust_occupation_info 
-        where regexp_replace(substr(time_upd,1,10),'-','') >='""" + v_statbgdate + """' 
-          and regexp_replace(substr(time_upd,1,10),'-','')<='""" + v_stateddate + """'
+        where regexp_replace(substr(time_upd,1,10),'-','') >='"""+ v_statbgdate +"""' 
+          and regexp_replace(substr(time_upd,1,10),'-','')<='"""+v_stateddate+"""'
        ) c
       on (h.id = c.id)
       
@@ -219,7 +217,7 @@ from (select
         h.unit_tel_ext_no,
         h.create_tm,
         h.update_tm,    
-        '""" + v_etl_date + """' as etl_dt,
+        '"""+v_etl_date+"""' as etl_dt,
         h.start_date,
         h.change_code,
         h.RESERVED_FIELD_V_1,
@@ -228,7 +226,7 @@ from (select
         h.RESERVED_FIELD_V_2,
         h.RESERVED_FIELD_D_2,
         h.RESERVED_FIELD_I_2,
-        '""" + v_statbgdate + """' as end_date,
+        '"""+ v_statbgdate +"""' as end_date,
         '19000101' as dt
       where h.id is not null and c.id is not null
       and (
@@ -290,7 +288,7 @@ from (select
         case when c.id is not null then c.emp_phone_ext_num else h.unit_tel_ext_no end as unit_tel_ext_no,
         case when c.id is not null then c.time_inst else h.create_tm end as create_tm,
         case when c.id is not null then c.time_upd else h.update_tm end as update_tm,
-        '""" + v_etl_date + """' as etl_date,        
+        '"""+ v_etl_date +"""' as etl_date,        
         if((h.id is null or c.id is not null) and (
             coalesce(h.id,'-979.090708') <> coalesce(c.id,'-979.090708') or
             coalesce(h.cust_id,'-979.090708') <> coalesce(c.cust_id,'-979.090708') or
@@ -320,7 +318,7 @@ from (select
             coalesce(h.create_tm,'-979.090708') <> coalesce(c.time_inst,'-979.090708') or
             coalesce(h.update_tm,'-979.090708') <> coalesce(c.time_upd,'-979.090708')
         ),
-        '""" + v_statbgdate + """',
+        '"""+ v_statbgdate +"""',
         h.start_date) as start_date,
         case
             when h.id is null then
@@ -366,50 +364,44 @@ from (select
         h.RESERVED_FIELD_I_2,
         regexp_replace(substr(case when c.id is not null then c.time_upd else h.update_tm end,1,10),'-','') as dt
       """
-res = hts.run_sql_in_hive(v_sql, isLzop=lzo_compress, isPartition=is_partition)
-v_end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-cnt = 0
-while v_start_date <= v_end_date:
-    file_name = '/user/hive/warehouse/fdl.db/' + tag_tab + '/chain_status=active/end_date=47121231/dt=' + datetime.datetime.strftime(
-        v_start_date, '%Y%m%d') + '/*'
-    try:
-        cnt = cnt + hts.count_lines(file_name)
-    except (TypeError, ValueError):
-        pass
-    file_name = '/user/hive/warehouse/fdl.db/' + tag_tab + '/chain_status=expired/end_date=' + v_yest_date + '/dt=' + datetime.datetime.strftime(
-        v_start_date, '%Y%m%d') + '/*'
-    try:
-        cnt = cnt + hts.count_lines(file_name)
-    except (TypeError, ValueError):
-        pass
-    v_start_date += datetime.timedelta(days=1)
+res = hts.run_sql_in_hive(v_sql, isLzop = lzo_compress,isPartition=is_partition)   
+v_end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  
+cnt=0
+while v_start_date<= v_end_date:
+   file_name='/user/hive/warehouse/fdl.db/'+tag_tab+'/chain_status=active/end_date=47121231/dt='+datetime.datetime.strftime(v_start_date,'%Y%m%d')+'/*'
+   try:
+      cnt=cnt+hts.count_lines(file_name)
+   except (TypeError, ValueError):
+      pass
+   file_name='/user/hive/warehouse/fdl.db/'+tag_tab+'/chain_status=expired/end_date='+ v_yest_date +'/dt='+datetime.datetime.strftime(v_start_date,'%Y%m%d')+'/*'
+   try:
+      cnt=cnt+hts.count_lines(file_name)
+   except (TypeError, ValueError):
+      pass
+   v_start_date+= datetime.timedelta(days=1)
 
 if res[0] != 0:
     raise Exception('Please Check SQL...')
-    hts.log_info('Please Check SQL...', 'ERROR')
-    logsql = "insert into msxf_edw_etljob_status values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    cur.execute(logsql, (
-    v_etl_date, tag_db.lower(), v_begin_time, v_end_time, 'failed', src_tab.lower(), cnt, tag_tab.lower(),
-    src_db.lower()))
+    hts.log_info('Please Check SQL...','ERROR')
+    logsql="insert into msxf_edw_etljob_status values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    cur.execute(logsql,(v_etl_date,tag_db.lower(),v_begin_time,v_end_time,'failed',src_tab.lower(),cnt,tag_tab.lower(),src_db.lower()))
 
     os._exit()
 else:
     if parse_flag:
-        parse_dict = hts.parse_table(tag_db, tag_tab)
+         parse_dict = hts.parse_table(tag_db,tag_tab)
     if merge_flag:
-        hts.merge_small_file(tag_db, tag_tab, partition=merge_part_dir, min_size=min_size)
+         hts.merge_small_file(tag_db, tag_tab, partition = merge_part_dir,  min_size = min_size)
     if lzo_compress and lzo_index_path != None:
-        hts.create_index(tag_db, tag_tab, parse_dict, v_statbgdate, path=lzo_index_path)
+        hts.create_index(tag_db, tag_tab, parse_dict, v_statbgdate, path = lzo_index_path)
 
-    #    cntsql="select sum(PARAM_VALUE) from hive.PARTITION_PARAMS where PART_ID in (select PART_ID from hive.PARTITIONS WHERE PART_NAME LIKE %s and TBL_ID=(select TBL_ID from hive.TBLS where TBL_NAME=%s)) and PARAM_KEY='numRows'"
-    #   domin_str='%dt='+v_statbgdate+'%'
-    #  cur.execute(cntsql,(domin_str,tag_tab.lower()))
-    #  res_cnt = cur.fetchone()[0]
-    #  if res_cnt:
-    #      cnt=int(res_cnt)
-    #  else:
-    #      cnt=0
-    logsql = "insert into msxf_edw_etljob_status values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    cur.execute(logsql, (
-    v_etl_date, tag_db.lower(), v_begin_time, v_end_time, 'success', src_tab.lower(), cnt, tag_tab.lower(),
-    src_db.lower()))
+#    cntsql="select sum(PARAM_VALUE) from hive.PARTITION_PARAMS where PART_ID in (select PART_ID from hive.PARTITIONS WHERE PART_NAME LIKE %s and TBL_ID=(select TBL_ID from hive.TBLS where TBL_NAME=%s)) and PARAM_KEY='numRows'"
+ #   domin_str='%dt='+v_statbgdate+'%'
+  #  cur.execute(cntsql,(domin_str,tag_tab.lower()))
+  #  res_cnt = cur.fetchone()[0]
+  #  if res_cnt:
+  #      cnt=int(res_cnt)
+  #  else:
+  #      cnt=0
+    logsql="insert into msxf_edw_etljob_status values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    cur.execute(logsql,(v_etl_date,tag_db.lower(),v_begin_time,v_end_time,'success',src_tab.lower(),cnt,tag_tab.lower(),src_db.lower()))
