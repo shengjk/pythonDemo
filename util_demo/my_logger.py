@@ -8,10 +8,6 @@ import time
 
 import os
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-
 
 def get_logger(domain, start_time = time.strftime('%Y%m%d', time.localtime())):
 	start_time = start_time[:12]

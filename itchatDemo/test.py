@@ -7,7 +7,7 @@ http://itchat.readthedocs.io/zh/latest/tutorial/tutorial0/
 '''
 @itchat.msg_register(itchat.content.TEXT)
 def print_content(msg):
-	print msg['Text']
+	print (msg['Text'])
 
 itchat.auto_login(hotReload=True)
 itchat.send(u'测试消息','filehelper')
