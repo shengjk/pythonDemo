@@ -29,11 +29,11 @@ def showMessage():
 	screenheight = root.winfo_screenheight() - 100
 	root.resizable(False, False)
 	# 添加组件
-	root.title("Warning!!")
+	root.title("工作已经很努力了，吃块狗屁丹药，休息会吧！")
 	frame = Frame(root, relief=RIDGE, borderwidth=3)
 	frame.pack(fill=BOTH, expand=1)  # pack() 放置组件若没有则组件不会显示
 	# 窗口显示的文字、并设置字体、字号
-	label = Label(frame, text="You have been working 30 minutes! Please have a break!!", \
+	label = Label(frame, text="You have been working 60 minutes! Please have a break!!", \
 	              font="Monotype\ Corsiva -20 bold")
 	label.pack(fill=BOTH, expand=1)
 	# 按钮的设置
@@ -50,6 +50,7 @@ def showMessage():
 	root.wm_attributes('-topmost', 1)
 	root.deiconify()
 	root.mainloop()
+	#点击ok按钮后，开始进入休息时间
 	print("休息3min")
 	time.sleep(3 * 60)
 	print("休息结束，开始工作")
