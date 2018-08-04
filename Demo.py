@@ -4,7 +4,6 @@
 #Create by shengjk1 on  2017/1/10
 
 
-
 if __name__ == '__main__':
 #对于单个字符的编码，Python提供了ord()函数获取字符的整数表示，chr()函数把编码转换为对应的字符
     print(ord("A"))
